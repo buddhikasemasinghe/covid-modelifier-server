@@ -6,18 +6,62 @@ class Covid19API extends RESTDataSource {
         this.baseURL = "https://api.covid19api.com/";
     }
 
-
     async getCountries() {
         const countryResponse =  await this.get('countries');
         return Array.isArray(countryResponse) ? countryResponse.map(country => this.countryReducer(country)) : []
     }
 
+    async worldSummary() {
+        const summary =  await this.get('summary');
+        let worldSummary = this.summaryReducer(summary.Global);
+        worldSummary.lastUpdated = summary.Date;
+        return worldSummary;
+    }
+
+    async countrySummary(slug) {
+        const summary =  await this.get('summary');
+        const country = summary.Countries.find(country => country.Slug === slug);
+        let countrySummary =  this.summaryReducer(country);
+        countrySummary.slug = slug;
+        countrySummary.countryName = country.Country;
+        return countrySummary;
+    }
+
+    async findFromDayOne(slug, status) {
+        const response =  await this.get(`/dayone/country/${slug}/status/${status.toLowerCase()} `);
+        return Array.isArray(response) ? response.map(stat => this.statisticsReducer(stat)) : []
+    }
+
     countryReducer(countryResponse) {
         return {
             name: countryResponse.Country,
-            id: countryResponse.Slug
+            slug: countryResponse.Slug
         }
     }
+
+    summaryReducer(response) {
+        return {
+            newConfirmed: response.NewConfirmed,
+            totalConfirmed: response.TotalConfirmed,
+            newDeaths: response.NewDeaths,
+            totalDeaths: response.TotalDeaths,
+            newRecovered: response.NewRecovered,
+            totalRecovered: response.TotalRecovered,
+            lastUpdated: response.Date
+        }
+    }
+    statisticsReducer(response){
+        return {
+            lat: response.Lat,
+            lon: response.Lon,
+            noOfCases: response.Cases,
+            status: response.Status,
+            lastUpdated: response.Date,
+            countryName: response.Country,
+            state: response.Province
+        }
+    }
+
 }
 
 module.exports = Covid19API;
