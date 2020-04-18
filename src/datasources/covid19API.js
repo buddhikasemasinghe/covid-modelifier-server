@@ -27,8 +27,14 @@ class Covid19API extends RESTDataSource {
         return countrySummary;
     }
 
+    async topCasesOrderByStatus(status, range) {
+        const summary =  await this.get('summary');
+        const topRange = summary.Countries.sort((a, b) => b[status] - a[status]).splice(0, range);
+        return Array.isArray(topRange) ? topRange.map(country => this.summaryReducer(country)) : [];
+    }
+
     async findFromDayOne(slug, status) {
-        const response =  await this.get(`/dayone/country/${slug}/status/${status.toLowerCase()} `);
+        const response =  await this.get(`/total/dayone/country/${slug}/status/${status.toLowerCase()} `);
         return Array.isArray(response) ? response.map(stat => this.statisticsReducer(stat)) : []
     }
 
@@ -47,7 +53,8 @@ class Covid19API extends RESTDataSource {
             totalDeaths: response.TotalDeaths,
             newRecovered: response.NewRecovered,
             totalRecovered: response.TotalRecovered,
-            lastUpdated: response.Date
+            lastUpdated: response.Date,
+            slug: response.Country
         }
     }
     statisticsReducer(response){

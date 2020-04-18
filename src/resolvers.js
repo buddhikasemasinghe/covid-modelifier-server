@@ -11,6 +11,9 @@ const resolvers = {
         },
         findFromDayOne: async (_, { slug, status },  { dataSources }) => {
             return await dataSources.covid19API.findFromDayOne(slug, status);
+        },
+        topCasesByStatus: async (_, { status, range =  10 },  { dataSources }) => {
+            return await dataSources.covid19API.topCasesOrderByStatus(status, range);
         }
     }
 };

@@ -45,6 +45,15 @@ const typeDefs = gql`
         ALL
     }
 
+    enum StatusMatrix {
+        TotalConfirmed
+        NewConfirmed
+        TotalDeaths
+        NewDeaths
+        NewRecovered
+        TotalRecovered
+    }
+
     type Statistics {
         countryName: String!
         state: String
@@ -60,6 +69,7 @@ const typeDefs = gql`
         worldDailySummary: WorldSummary,
         countryDailySummary(slug: String!): CountrySummary,
         findFromDayOne(slug: String!, status: Status!): [Statistics]
+        topCasesByStatus(status: StatusMatrix!, range: Int): [CountrySummary]
     }
 `;
 
