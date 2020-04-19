@@ -41,7 +41,8 @@ class Covid19API extends RESTDataSource {
     countryReducer(countryResponse) {
         return {
             name: countryResponse.Country,
-            slug: countryResponse.Slug
+            slug: countryResponse.Slug,
+            isoCode: countryResponse.ISO2
         }
     }
 
@@ -54,7 +55,8 @@ class Covid19API extends RESTDataSource {
             newRecovered: response.NewRecovered,
             totalRecovered: response.TotalRecovered,
             lastUpdated: response.Date,
-            slug: response.Country
+            slug: response.Slug,
+            countryName: response.Country
         }
     }
     statisticsReducer(response){

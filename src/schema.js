@@ -3,7 +3,8 @@ const { gql } = require('apollo-server');
 const typeDefs = gql`
     type Country {
         slug: String!
-        name: String!     
+        name: String!
+        isoCode: String     
     }
 
     interface Summary {
